@@ -13,6 +13,21 @@ impl Blockchain {
             } else if !block::check_difficulty(&block.hash(), block.difficulty) {
                 println!("Difficulty fail");
                 return false;
+            } else if i != 0 {
+                // NOT GEN BLOCK
+                let prev_block = &self.blocks[i - 1];
+                if block.timestamp <= prev_block.timestamp {
+                    println!("Time did not increase (verification fail)");
+                    return false;
+                } else if block.prev_block_hash != prev_block.hash {
+                    println!("Prev block hash mismatch");
+                }
+            } else {
+                // GEN BLOCK
+                if block.prev_block_hash != vec![0; 32] {
+                    println!("GEN block prev hash invalid");
+                    return false;
+                }
             }
         }
 
